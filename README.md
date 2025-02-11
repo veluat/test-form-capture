@@ -1,36 +1,37 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Task Creation Form
 
-## Getting Started
+Этот проект представляет собой форму для создания задач, использующую Next.js, TypeScript, Vite и Tailwind CSS. Форма отправляет данные на API для создания новых задач, с возможностью настройки автоматических ответов.
 
-First, run the development server:
+## Установка
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+1. **Клонируйте репозиторий:**
+   ```bash
+   git clone https://github.com/veluat/test-form-capture.git
+   cd your-repo-directory
+   ```
+   
+2. **Установите зависимости:**
+   ```bash
+   npm install
+   ```
+3. **Запустите проект:**
+   ```bash
+   npm run dev
+   ```
+4. **Откройте браузер** и перейдите по адресу http://localhost:3000.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Использование
+- Заполните все обязательные поля формы.
+- Включите опцию "Все автоматические ответы", если хотите использовать автоответы.
+- Если автоответы отключены, заполните поле с правилами в формате JSON.
+- Нажмите кнопку "Отправить", чтобы создать задачу.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
-
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Пример структуры JSON для правил:
+   ```json
+  {
+   "budget_from": 5000,
+   "budget_to": 8000,
+   "deadline_days": 5,
+   "qty_freelancers": 1
+}
+   ```

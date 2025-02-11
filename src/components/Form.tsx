@@ -1,9 +1,11 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import {createTask} from '@/app/services/api'
+import {CreateTaskParams} from '@/app/services/types'
 
-const Form: React.FC = () => {
-  const [token, setToken] = useState<string>(localStorage.getItem('token') || '');
+const Form = () => {
+  const [token, setToken] = useState<string>('');
   const [title, setTitle] = useState<string>('');
   const [description, setDescription] = useState<string>('');
   const [tags, setTags] = useState<string>('');
@@ -19,28 +21,40 @@ const Form: React.FC = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    try {
-      const response = await fetch(`https://deadlinetaskbot.productlove.ru/api/v1/tasks/client/newhardtask?token=${token}&title=${encodeURIComponent(title)}&description=${encodeURIComponent(description)}&tags=${encodeURIComponent(tags)}&budget_from=${budgetFrom}&budget_to=${budgetTo}&deadline=${deadline}&reminds=${reminds}&all_auto_responses=${allAutoResponses}&rules=${rules}`, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      });
+    const params: CreateTaskParams = {
+      token,
+      title: encodeURIComponent(title),
+      description: encodeURIComponent(description),
+      tags: encodeURIComponent(tags),
+      budget_from: budgetFrom,
+      budget_to: budgetTo,
+      deadline,
+      reminds,
+      all_auto_responses: allAutoResponses,
+      ...(allAutoResponses ? {} : { rules }),
+    };
 
-      if (response.status === 200) {
-        alert('Задача успешно опубликована!');
-      } else {
-        alert('Ошибка при публикации задачи');
-      }
+    try {
+      await createTask(params);
+      alert('Задача успешно опубликована!');
     } catch (error) {
       alert('Произошла ошибка: ' + (error as Error).message);
     }
   };
 
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const savedToken = localStorage.getItem('token');
+      setToken(savedToken || '');
+    }
+  }, []);
+
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100">
       <form onSubmit={handleSubmit} className="w-[600px] p-6 bg-white shadow-lg rounded-lg border border-blue-200">
         <h2 className="text-2xl font-semibold mb-4 text-center text-blue-700">Создать новую задачу</h2>
+
+        {/* Токен */}
         <div className="mb-4">
           <label className="block text-gray-700">Токен</label>
           <input
@@ -54,6 +68,8 @@ const Form: React.FC = () => {
             required
           />
         </div>
+
+        {/* Заголовок */}
         <div className="mb-4">
           <label className="block text-gray-700">Заголовок</label>
           <input
@@ -64,6 +80,8 @@ const Form: React.FC = () => {
             required
           />
         </div>
+
+        {/* Описание */}
         <div className="mb-4">
           <label className="block text-gray-700">Описание</label>
           <textarea
@@ -73,6 +91,8 @@ const Form: React.FC = () => {
             required
           />
         </div>
+
+        {/* Теги */}
         <div className="mb-4">
           <label className="block text-gray-700">Теги (через запятую)</label>
           <input
@@ -82,6 +102,8 @@ const Form: React.FC = () => {
             className="w-full px-4 py-2 border border-blue-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
         </div>
+
+        {/* Бюджет от */}
         <div className="mb-4">
           <label className="block text-gray-700">Бюджет от</label>
           <input
@@ -92,6 +114,8 @@ const Form: React.FC = () => {
             required
           />
         </div>
+
+        {/* Бюджет до */}
         <div className="mb-4">
           <label className="block text-gray-700">Бюджет до</label>
           <input
@@ -102,6 +126,8 @@ const Form: React.FC = () => {
             required
           />
         </div>
+
+        {/* Срок выполнения */}
         <div className="mb-4">
           <label className="block text-gray-700">Срок выполнения (дни)</label>
           <input
@@ -112,6 +138,8 @@ const Form: React.FC = () => {
             required
           />
         </div>
+
+        {/* Напоминания */}
         <div className="mb-4">
           <label className="block text-gray-700">Напоминания</label>
           <input
@@ -122,6 +150,8 @@ const Form: React.FC = () => {
             required
           />
         </div>
+
+        {/* Все автоматические ответы */}
         <div className="mb-4">
           <label className="block text-gray-700">
             <input
@@ -133,15 +163,20 @@ const Form: React.FC = () => {
             Все автоматические ответы
           </label>
         </div>
-        <div className="mb-4">
-          <label className="block text-gray-700">Правила (JSON)</label>
-          <textarea
-            value={rules}
-            onChange={(e) => setRules(e.target.value)}
-            className="w-full px-4 py-2 border border-blue-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-            required
-          />
-        </div>
+
+        {/* Поле правил отображается, только если автоответы не включены */}
+        {!allAutoResponses && (
+          <div className="mb-4">
+            <label className="block text-gray-700">Правила (JSON)</label>
+            <textarea
+              value={rules}
+              onChange={(e) => setRules(e.target.value)}
+              className="w-full px-4 py-2 border border-blue-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              required
+            />
+          </div>
+        )}
+
         <button
           type="submit"
           className="w-full bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400 transition"
