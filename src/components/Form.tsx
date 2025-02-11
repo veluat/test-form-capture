@@ -38,7 +38,7 @@ const Form: React.FC = () => {
   };
 
   return (
-    <div className="flex items-center justify-center h-screen bg-gray-100">
+    <div className="flex items-center justify-center min-h-screen bg-gray-100">
       <form onSubmit={handleSubmit} className="w-[600px] p-6 bg-white shadow-lg rounded-lg border border-blue-200">
         <h2 className="text-2xl font-semibold mb-4 text-center text-blue-700">Создать новую задачу</h2>
         <div className="mb-4">
